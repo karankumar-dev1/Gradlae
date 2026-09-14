@@ -100,6 +100,15 @@ export function proxy(request: NextRequest) {
         return NextResponse.next();
     }
 
+    // ─── Paused Feature: Batch-Upgrade Quiz ───
+    // The 5-vs-10-week placement quiz is temporarily on hold. Send anyone who
+    // reaches the quiz flow (direct URL, bookmark, stale link) back to
+    // placements before the page renders. The quiz pages, logic, and APIs are
+    // left intact so the feature can be restored by removing this block.
+    if (pathname === '/quiz' || pathname === '/results') {
+        return NextResponse.redirect(new URL('/placements', request.url));
+    }
+
     // ─── Rate Limiting ───
     if (pathname.startsWith('/api/') && !pathname.startsWith('/api/upload')) {
         const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()

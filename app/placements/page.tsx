@@ -12,6 +12,11 @@ import { parseTranscriptFromPdf, describeTranscriptFailure } from '../lib/transc
 
 type Step = 'upload' | 'results';
 
+// Feature flag: the batch-upgrade quiz (5 vs 10 week placement) is temporarily
+// paused. Flip to true to restore the "Take Quiz to Upgrade" entry point.
+// The quiz logic, pages, and APIs remain intact; only the UI access is gated.
+const QUIZ_ENABLED = false;
+
 async function readJsonResponse(response: Response) {
   const text = await response.text();
   const trimmed = text.trim();
@@ -612,7 +617,7 @@ export default function PlacementsPage() {
                             <p className={styles.batchLabel}>Recommended Batch</p>
                             <p className={styles.batchName}>{batchRec.batch}</p>
                           </div>
-                          {batchRec.canUpgrade && (
+                          {QUIZ_ENABLED && batchRec.canUpgrade && (
                             <button
                               className={styles.quizBtn}
                               onClick={() => {
